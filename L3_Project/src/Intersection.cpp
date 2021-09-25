@@ -18,14 +18,22 @@ int WaitingVehicles::getSize()
     return _vehicles.size();
 }
 
+std::mutex WaitingVehiclesMtx1;  // Amr: mutex to safeguard within pushback   
+
 void WaitingVehicles::pushBack(std::shared_ptr<Vehicle> vehicle, std::promise<void> &&promise)
 {
+    std::lock_guard<std::mutex> lck(WaitingVehiclesMtx1); //Amr: mutex using Lock Guard
+
     _vehicles.push_back(vehicle);
     _promises.push_back(std::move(promise));
 }
 
+std::mutex WaitingVehiclesMtx2; // Amr: mutex to safeguard within permitEntryToFirstInQueue  
+
 void WaitingVehicles::permitEntryToFirstInQueue()
 {
+    std::lock_guard<std::mutex> lck(WaitingVehiclesMtx2); //Amr: mutex using Lock Guard
+
     // get entries from the front of both queues
     auto firstPromise = _promises.begin();
     auto firstVehicle = _vehicles.begin();
@@ -71,14 +79,18 @@ void Intersection::addVehicleToQueue(std::shared_ptr<Vehicle> vehicle)
 {
     // L3.3 : Ensure that the text output locks the console as a shared resource. Use the mutex _mtxCout you have added to the base class TrafficObject in the previous task. Make sure that in between the two calls to std-cout at the beginning and at the end of addVehicleToQueue the lock is not held. 
 
+    std::unique_lock<std::mutex> lck(_mtxCout);
     std::cout << "Intersection #" << _id << "::addVehicleToQueue: thread id = " << std::this_thread::get_id() << std::endl;
+    lck.unlock();
 
     // add new vehicle to the end of the waiting line
     std::promise<void> prmsVehicleAllowedToEnter;
     std::future<void> ftrVehicleAllowedToEnter = prmsVehicleAllowedToEnter.get_future();
-    _waitingVehicles.pushBack(vehicle, std::move(prmsVehicleAllowedToEnter))
+    _waitingVehicles.pushBack(vehicle, std::move(prmsVehicleAllowedToEnter));
+
     // wait until the vehicle is allowed to enter
     ftrVehicleAllowedToEnter.wait();
+    lck.lock();
     std::cout << "Intersection #" << _id << ": Vehicle #" << vehicle->getID() << " is granted entry." << std::endl;
 }
 

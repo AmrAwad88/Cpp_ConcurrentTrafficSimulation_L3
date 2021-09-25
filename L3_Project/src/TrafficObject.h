@@ -28,6 +28,7 @@ public:
 
     // typical behaviour methods
     virtual void simulate(){};
+    static std::mutex _mtxCout;
 
 protected:
     ObjectType _type;                 // identifies the class type
