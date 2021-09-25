@@ -1,6 +1,10 @@
 # Cpp_ConcurrentTrafficSimulation_L3
 This is a training for writing a concurrent program in C++
 
+This is the second lesson's excercise. The code explanation is provided by Prof. Andreas Haja in the Youtube links below:
+https://www.youtube.com/watch?v=vfNXDebmZIM&t=4s&ab_channel=Udacity \
+https://www.youtube.com/watch?v=w4L17HaT2Xk&t=1s&ab_channel=Udacity
+
 ## The Project's Description:
 
 ### Project Tasks
@@ -14,8 +18,8 @@ You can find these tasks in the project_tasks.txt within the workspace as well.
 
 ### Build Instructions
 To compile and run the code, create a build directory and use cmake and make as follows:
-../L1_Project# mkdir build \
-../L1_Project# cd build \
-../L1_Project/build# cmake .. \
-../L1_Project/build# make \
-../L1_Project/build# ./traffic_simulation
+../L3_Project# mkdir build \
+../L3_Project# cd build \
+../L3_Project/build# cmake .. \
+../L3_Project/build# make \
+../L3_Project/build# ./traffic_simulation
